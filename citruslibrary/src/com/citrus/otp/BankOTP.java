@@ -10,9 +10,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package com.citrus.mobile;
+package com.citrus.otp;
 
 
-public interface Callback {
-    public void onTaskexecuted(String success, String error);
+
+public enum BankOTP {
+
+	ICICI("ICICI"), 
+	KOTAK("KOTAK"), 
+	CITI("CITI"), 
+	AXIS("AXIS"), 
+	HDFC("HDFC"),
+	AMEX("AMEX"),
+	SBI("SBI");   
+	
+	private BankOTP(String pattern) {
+	
+	}
+	
+	public static BankOTP bankName(String sendername) {
+		for (BankOTP type : values()) {
+			if (sendername.toLowerCase().contains(type.toString().toLowerCase())) {
+				return type;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
 }

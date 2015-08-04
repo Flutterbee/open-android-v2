@@ -16,8 +16,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"
             android:text="Bind User"/>
-
-
+        
         <Button
             android:id="@+id/savecard"
             android:layout_width="match_parent"
@@ -25,12 +24,13 @@
             android:layout_marginBottom="20dp"
             android:text="Save Card"/>
 
+
         <Button
-            android:id="@+id/savebank"
+            android:id="@+id/deletecard"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"
-            android:text="Save Bank"/>
+            android:text="Delete Card"/>
 
         <Button
             android:id="@+id/getWallet"
@@ -38,6 +38,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"
             android:text="Get Wallet"/>
+
 
         <Button
             android:id="@+id/paybutton"

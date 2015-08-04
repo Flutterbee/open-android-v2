@@ -10,9 +10,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package com.citrus.mobile;
+package com.citrus.otp;
 
-
-public interface Callback {
-    public void onTaskexecuted(String success, String error);
+public enum OtpLength {
+	ICICI("6"), 
+	KOTAK("6"), 
+	CITI("6"), 
+	AXIS("6"), 
+	HDFC("6"), 
+	AMEX("6"),
+	SBI("6"); 
+	
+	private String length;
+	
+	private OtpLength (String otplength) {
+		this.length = otplength;
+	}
+	
+	public String getLength() {
+		return length;
+	}
+	
+	public static OtpLength getOtpLength (String bankType) {
+		return OtpLength.valueOf(bankType);	
+	}
 }

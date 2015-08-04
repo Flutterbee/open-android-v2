@@ -1,6 +1,21 @@
+/*
+   Copyright 2014 Citrus Payment Solutions Pvt. Ltd.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package com.citrus.sample;
 
-import java.io.IOException;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.citrus.mobile.Callback;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,42 +25,41 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.AsyncTask;
-import android.text.TextUtils;
+import java.io.IOException;
 
-import com.citrus.mobile.Callback;
-
-class GetBill extends AsyncTask<Void, Void, String> {
+public class GetBill extends AsyncTask<Void, Void, Void> {
     String billurl;
+
+    JSONObject response;
     Callback callback;
-    double amount;
 
     public GetBill(String url, double amount, Callback callback) {
         billurl = url;
+
+        if (billurl != null) {
+            if (billurl.contains("?")) {
+                this.billurl = this.billurl + "&amount=" + amount;
+            } else {
+                this.billurl = this.billurl + "?amount=" + amount;
+            }
+        }
+
         this.callback = callback;
-        this.amount = amount;
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
         HttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(billurl + "?amount=" + amount);
-        HttpResponse response = null;
+        HttpGet httpGet = new HttpGet(billurl);
+        HttpResponse httpResponse;
 
         try {
-            response = httpClient.execute(httpGet);
+            httpResponse = httpClient.execute(httpGet);
+            response = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
 
-            if (response.getStatusLine().getStatusCode() == 200) {
-                JSONObject jsonObject = new JSONObject(EntityUtils.toString(response.getEntity()));
-                if (jsonObject != null) {
-                    return jsonObject.toString();
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -53,11 +67,14 @@ class GetBill extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String response) {
-        if (!TextUtils.isEmpty(response)) {
-            callback.onTaskexecuted(response, "");
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+        if (response != null) {
+            Log.d("Citrus", "BILL RESPONSE::: " + response.toString());
+            callback.onTaskexecuted(response.toString(), "");
         } else {
-            callback.onTaskexecuted("", "Could not get the bill");
+            callback.onTaskexecuted("", "Is your billing url correct?");
         }
     }
 }

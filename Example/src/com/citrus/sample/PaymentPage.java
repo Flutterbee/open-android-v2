@@ -1,3 +1,15 @@
+/*
+   Copyright 2014 Citrus Payment Solutions Pvt. Ltd.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package com.citrus.sample;
 
 import org.json.JSONException;
@@ -21,66 +33,68 @@ import com.citrus.payment.UserDetails;
 import com.citruspay.sample.R;
 
 public class PaymentPage extends Activity {
-	private static final String BILL_URL = "http://yourwebsite.com/billGenerator.jsp";// host your bill url here
-	Button cardpayment, tokenpayment, bankpay, tokenbankpay;
+    public static final String BILL_URL = "https://salty-plateau-1529.herokuapp.com/billGenerator.sandbox.php";
 
-	JSONObject customer;
+    Button cardpayment, tokenpayment, bankpay, tokenBankPay;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_payment_page);
+    JSONObject customer;
 
-		cardpayment = (Button) this.findViewById(R.id.cardpayment);
 
-		tokenpayment = (Button) this.findViewById(R.id.tokenpayment);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_payment_page);
 
-		bankpay = (Button) this.findViewById(R.id.bankpay);
-		
-		tokenbankpay = (Button) this.findViewById(R.id.tokenbankpay);
+        cardpayment = (Button) this.findViewById(R.id.cardpayment);
 
-		customer = new JSONObject();
+        tokenpayment = (Button) this.findViewById(R.id.tokenpayment);
 
-		cardpayment.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new GetBill(BILL_URL, 2, new Callback() {
-					@Override
-					public void onTaskexecuted(String bill, String error) {
-						if (TextUtils.isEmpty(error)) {
-							cardpay(bill);
-						}
-					}
-				}).execute();
-			}
-		});
+        bankpay = (Button) this.findViewById(R.id.bankpay);
+        
+        tokenBankPay = (Button) this.findViewById(R.id.tokenbankpay);
+                                
+        customer = new JSONObject();
 
-		tokenpayment.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new GetBill(BILL_URL, 2, new Callback() {
-					@Override
-					public void onTaskexecuted(String bill, String error) {
-						tokenpay(bill);
-					}
-				}).execute();
-			}
-		});
+        cardpayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GetBill(BILL_URL, 3.0, new Callback() {
+                    @Override
+                    public void onTaskexecuted(String bill, String error) {
+                        if (TextUtils.isEmpty(error)) {
+                            cardpay(bill);
+                        }
+                    }
+                }).execute();
+            }
+        });
 
-		bankpay.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new GetBill(BILL_URL, 3, new Callback() {
-					@Override
-					public void onTaskexecuted(String bill, String error) {
-						bankpay(bill);
-					}
-				}).execute();
-			}
-		});
-		
-		
-		tokenbankpay.setOnClickListener(new View.OnClickListener() {
+        tokenpayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GetBill(BILL_URL, 2.0, new Callback() {
+                    @Override
+                    public void onTaskexecuted(String bill, String error) {
+                          tokenpay(bill);
+                    }
+                }).execute();
+            }
+        });
+
+        bankpay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GetBill(BILL_URL, 4.0, new Callback() {
+                    @Override
+                    public void onTaskexecuted(String bill, String error) {
+                          bankpay(bill);
+                    }
+                }).execute();
+            }
+        });
+               
+        
+        tokenBankPay.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				new GetBill(BILL_URL, 3, new Callback() {
@@ -92,61 +106,61 @@ public class PaymentPage extends Activity {
 			}
 		});
 
-		filluserDetails();
-	}
+        filluserDetails();
+    }
 
-	private void cardpay(String bill_string) {
-		Bill bill = new Bill(bill_string);
+    private void cardpay(String bill_string) {
+        Bill bill = new Bill(bill_string);
 
-		Card card = new Card("4111111111111111", "11", "21", "000", "Tony Stark", "debit");
+        Card card = new Card("4111111111111111", "11", "21", "000", "Tony Stark", "debit");
 
-		UserDetails userDetails = new UserDetails(customer);
+        UserDetails userDetails = new UserDetails(customer);
 
-		PG paymentgateway = new PG(card, bill, userDetails);
+        PG paymentgateway = new PG(card, bill, userDetails);
 
-		paymentgateway.charge(new Callback() {
-			@Override
-			public void onTaskexecuted(String success, String error) {
-				processresponse(success, error);
-			}
-		});
-	}
+        paymentgateway.charge(new Callback() {
+            @Override
+            public void onTaskexecuted(String success, String error) {
+                processresponse(success, error);
+            }
+        });
+    }
 
-	private void tokenpay(String bill_string) {
-		Bill bill = new Bill(bill_string);
+    private void tokenpay(String bill_string) {
+        Bill bill = new Bill(bill_string);
 
-		Card card = new Card("e8c18a9aac39cfeb6f0d02f28ed4660b", "123");
+        Card card = new Card("e8c18a9aac39cfeb6f0d02f28ed4660b", "123");
 
-		UserDetails userDetails = new UserDetails(customer);
+        UserDetails userDetails = new UserDetails(customer);
 
-		PG paymentgateway = new PG(card, bill, userDetails);
+        PG paymentgateway = new PG(card, bill, userDetails);
 
-		paymentgateway.charge(new Callback() {
-			@Override
-			public void onTaskexecuted(String success, String error) {
-				processresponse(success, error);
-			}
-		});
-	}
+        paymentgateway.charge(new Callback() {
+            @Override
+            public void onTaskexecuted(String success, String error) {
+                processresponse(success, error);
+            }
+        });
+    }
 
-	private void bankpay(String bill_string) {
-		Bill bill = new Bill(bill_string);
+    private void bankpay(String bill_string) {
+        Bill bill = new Bill(bill_string);
 
-		Bank netbank = new Bank("CID002");
+        Bank netbank = new Bank("CID002");
 
-		UserDetails userDetails = new UserDetails(customer);
+        UserDetails userDetails = new UserDetails(customer);
 
-		PG paymentgateway = new PG(netbank, bill, userDetails);
+        PG paymentgateway = new PG(netbank, bill, userDetails);
 
-		paymentgateway.charge(new Callback() {
-			@Override
-			public void onTaskexecuted(String success, String error) {
-				processresponse(success, error);
-			}
-		});
-	}
-	
-	
+        paymentgateway.charge(new Callback() {
+            @Override
+            public void onTaskexecuted(String success, String error) {
+                processresponse(success, error);
+            }
+        });
+    }
+    
+    
 	private void tokenbankpay(String bill_string) {
 		Bill bill = new Bill(bill_string);
 
@@ -164,11 +178,10 @@ public class PaymentPage extends Activity {
 		});
 	}
 
-	private void filluserDetails() {
-		/*
-		 * All the below mentioned parameters are mandatory - missing anyone of them may create errors Do not change the
-		 * key in the json below - only change the values
-		 */
+    
+    private void filluserDetails() {
+        /*All the below mentioned parameters are mandatory - missing anyone of them may create errors
+        * Do not change the key in the json below - only change the values*/
 
 		try {
 			customer.put("firstName", "Tester");
@@ -185,33 +198,34 @@ public class PaymentPage extends Activity {
 			e.printStackTrace();
 		}
 
-	}
+    }
 
-	private void processresponse(String response, String error) {
+    private void processresponse(String response, String error) {
 
-		if (!TextUtils.isEmpty(response)) {
-			try {
+        if (!TextUtils.isEmpty(response)) {
+            try {
 
-				JSONObject redirect = new JSONObject(response);
-				Intent i = new Intent(PaymentPage.this, WebPage.class);
+                JSONObject redirect = new JSONObject(response);
+                Intent i = new Intent(PaymentPage.this, WebPage.class);
 
-				if (!TextUtils.isEmpty(redirect.getString("redirectUrl"))) {
+                if (!TextUtils.isEmpty(redirect.getString("redirectUrl"))) {
 
-					i.putExtra("url", redirect.getString("redirectUrl"));
-					startActivity(i);
-				} else {
-					Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-				}
+                    i.putExtra("url", redirect.getString("redirectUrl"));
+                    startActivity(i);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                }
 
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
-		else {
-			Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
-		}
+        else {
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+        }
 
-	}
-
+    }
+    
 }
